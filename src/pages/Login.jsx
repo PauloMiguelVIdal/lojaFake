@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Container,
     TextField,
@@ -10,20 +10,20 @@ import {
 import axios from "axios";
 import Navbar from "../navbar/Navbar";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { Link as RouterLink } from 'react-router-dom';
+
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const [token, setToken] = useState(null);
+    
+    const navigate = useNavigate();
 
-useEffect(() => {
-    axios.get('https://fakestoreapi.com/users')
-    .then(response => console.log(response.data));
-}, []);
-
-const navigate = useNavigate();
+    useEffect(() => {
+        axios.get('https://fakestoreapi.com/users')
+            .then(response => console.log(response.data));
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,21 +31,47 @@ const navigate = useNavigate();
         setToken(null);
 
         const credentials = {
-            username: email,      
+            username: email,
             password: password,
         };
 
+        // Primeiro, tenta login local
+        const loginUser = (username, password) => {
+            const stored = JSON.parse(localStorage.getItem("fakeUser"));
+            if (stored && stored.username === username && stored.password === password) {
+                localStorage.setItem("authToken", "fake-token");
+                setToken("fake-token");
+                return true;
+            }
+            return false;
+        };
+
+        // Se login local funcionar, pula o login na API
+        if (loginUser(email, password)) {
+            console.log("Login local bem-sucedido.");
+            setTimeout(() => {
+                navigate("/"); // Redireciona após registro
+            }, 1000);
+            return;
+        }
+
+        // Tenta login via API externa (Fake Store)
         try {
             const response = await axios.post(
                 "https://fakestoreapi.com/auth/login",
                 credentials
             );
-            setToken(response.data.token);
-            console.log("Token recebido:", response.data.token);
+            const apiToken = response.data.token;
+            setToken(apiToken);
+            localStorage.setItem("authToken", apiToken);
+            console.log("Token recebido:", apiToken);
+            // Redireciona após login, se desejar
+            // navigate("/dashboard");
         } catch (err) {
             setError("Falha no login. Verifique suas credenciais.");
             console.error(err);
         }
+
     };
 
     return (
@@ -98,7 +124,7 @@ const navigate = useNavigate();
                         )}
                         {token && (
                             <Typography color="success.main" sx={{ mt: 2 }}>
-                                Token recebido: {token}
+                                Usuário logado com sucesso!
                             </Typography>
                         )}
                         <Button
@@ -109,11 +135,16 @@ const navigate = useNavigate();
                         >
                             Login
                         </Button>
-                        <Button>
-                    <Link onClick={()=>(navigate("/Register"))} style={{ textDecoration: 'none' }}>
-                        Register
-                    </Link>
-                </Button>
+
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            component={RouterLink}
+                            to="/Register"
+                            sx={{ mt: 1 }}
+                        >
+                            Register
+                        </Button>
                     </Box>
                 </Box>
             </Container>

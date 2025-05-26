@@ -1,6 +1,5 @@
-import { Button } from "@mui/material";
+import { Button, Container, TextField, Typography, Box, Grid } from "@mui/material";
 import { useState } from "react";
-import { Container, TextField, Typography, Box, Grid } from "@mui/material";
 import axios from "axios";
 import Navbar from "../navbar/Navbar";
 import { useNavigate } from "react-router-dom";
@@ -26,22 +25,27 @@ function Register() {
             password: password,
             name: {
                 firstname: firstname,
-                lastname: lastName
+                lastname: lastName,
             },
         };
 
+        // Salva localmente para login futuro
+        localStorage.setItem("fakeUser", JSON.stringify({
+            username,
+            password
+        }));
+
         try {
             const response = await axios.post("https://fakestoreapi.com/users", user);
-            console.log(response.data);
-            setSuccess("Usuário registrado com sucesso!");
-            console.log("Enviando:", user)
-            console.log("Resposta:", response.data);
-            // Se quiser redirecionar para o login após o registro:
-            // navigate('/login');
+            console.log("Usuário registrado na API:", response.data);
         } catch (err) {
-            console.error(err);
-            setError("Erro ao registrar usuário.");
+            console.warn("Falha ao registrar na API, mas salvamos localmente:", err);
         }
+
+        setSuccess("Usuário registrado com sucesso!");
+        setTimeout(() => {
+            navigate("/login"); // Redireciona após registro
+        }, 1000);
     };
 
     return (
@@ -67,9 +71,7 @@ function Register() {
                                         required
                                         fullWidth
                                         id="firstname"
-                                        label="firstname"
-                                        name="firstname"
-                                        autoComplete="firstname"
+                                        label="First Name"
                                         value={firstname}
                                         onChange={(e) => setFirstname(e.target.value)}
                                     />
@@ -79,9 +81,7 @@ function Register() {
                                         required
                                         fullWidth
                                         id="lastname"
-                                        label="Lastname"
-                                        name="lastname"
-                                        autoComplete="lastname"
+                                        label="Last Name"
                                         value={lastName}
                                         onChange={(e) => setLastname(e.target.value)}
                                     />
@@ -92,8 +92,6 @@ function Register() {
                                         fullWidth
                                         id="username"
                                         label="Username"
-                                        name="username"
-                                        autoComplete="username"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
                                     />
@@ -104,8 +102,7 @@ function Register() {
                                         fullWidth
                                         id="email"
                                         label="Email"
-                                        name="email"
-                                        autoComplete="email"
+                                        type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
@@ -114,11 +111,9 @@ function Register() {
                                     <TextField
                                         required
                                         fullWidth
-                                        name="password"
+                                        id="password"
                                         label="Password"
                                         type="password"
-                                        id="password"
-                                        autoComplete="current-password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
