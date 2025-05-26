@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import './App.css'
 import { Routes,Route,BrowserRouter } from 'react-router-dom';
 import Register from './pages/Register';
+import Cart from './pages/Cart';
 
 function App() {
 
@@ -16,6 +17,8 @@ function App() {
         {/* <Route path="/cadastrar-produto" element={<CadastrarProduto />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/cart" element={<Cart />} />
+
       </Routes>
     </BrowserRouter>
         {/* <Login />

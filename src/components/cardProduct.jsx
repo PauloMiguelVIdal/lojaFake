@@ -9,9 +9,13 @@ import CardActions from '@mui/material/CardActions'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import AccordionDescription from './accordionDescription';
+import { useNavigate } from "react-router-dom";
+
+
+
 export default function CardProduct({ title, price, description, image }) {
 
-
+  const navigate = useNavigate();
 
     return (
         <Card sx={{ maxWidth: 345, }} >

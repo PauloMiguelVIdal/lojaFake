@@ -24,7 +24,8 @@ const drawerWidth = 240;
 const navItems = [
     { label: 'Home', path: '/' },
     { label: 'Cadastrar Produto', path: '/cadastrar-produto' },
-    { label: 'Login', path: '/login' }
+    { label: 'Login', path: '/login' },
+    { label: 'Carrinho', path: '/cart' }
 ];
 
 function Navbar(props) {
@@ -61,6 +62,14 @@ function Navbar(props) {
 
     const container = window !== undefined ? () => window().document.body : undefined;
 
+
+
+    React.useEffect(() => {
+    localStorage.getItem("fakeUser") && console.log("Usuário local encontrado:", JSON.parse(localStorage.getItem("fakeUser")));
+    }, []);
+
+const nomeUser = localStorage.getItem("fakeUser") ? JSON.parse(localStorage.getItem("fakeUser")).username : "Usuário";
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -90,6 +99,13 @@ function Navbar(props) {
                         ))}
                     </Box>
                     <ShoppingCartIcon sx={{ ml: 2 }} />
+                    
+                    {nomeUser && (
+                            <Typography variant="h6" sx={{ ml: 2 }}>
+                               {nomeUser}
+                            </Typography>
+                        )}
+
                     <PersonIcon sx={{ ml: 2 }} />
                 </Toolbar>
             </AppBar>
