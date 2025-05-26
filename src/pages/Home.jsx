@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { use } from 'react';
 import CardProduct from '../components/cardProduct'
 import Navbar from '../navbar/Navbar'
 import { useEffect, useState } from 'react';
@@ -22,6 +22,15 @@ const Home = () => {
 
     axios.get('https://fakestoreapi.com/products')
         .then(response => console.log(response.data))
+
+
+        useEffect(() => {
+            // Fetch users data from the API
+            axios.get('https://fakestoreapi.com/users')
+                .then(response => console.log(response.data))
+                .catch(error => console.error('Error fetching users:', error));
+        }, []);
+
 
 
     return (
