@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import Navbar from "../navbar/Navbar";
 import { useNavigate } from "react-router-dom";
+import Cart from "./Cart";
 
 function Register() {
     const [username, setUsername] = useState("");
@@ -18,7 +19,8 @@ function Register() {
         e.preventDefault();
         setError(null);
         setSuccess(null);
-
+    
+        // Cria o objeto completo do usuário com carrinho incluso
         const user = {
             email: email,
             username: username,
@@ -27,27 +29,26 @@ function Register() {
                 firstname: firstname,
                 lastname: lastName,
             },
+            cart: {
+                products: [],
+                total: 0
+            }
         };
-
-        // Salva localmente para login futuro
-        localStorage.setItem("fakeUser", JSON.stringify({
-            username,
-            password
-        }));
-
+    
         try {
-            const response = await axios.post("https://fakestoreapi.com/users", user);
-            console.log("Usuário registrado na API:", response.data);
+            // Armazena localmente o usuário completo como "fakeUser"
+            localStorage.setItem("fakeUser", JSON.stringify(user));
+    
+            setSuccess("Usuário registrado com sucesso!");
+            setTimeout(() => {
+                navigate("/login");
+            }, 1000);
         } catch (err) {
-            console.warn("Falha ao registrar na API, mas salvamos localmente:", err);
+            console.error("Erro ao registrar usuário localmente:", err);
+            setError("Erro ao registrar. Tente novamente.");
         }
-
-        setSuccess("Usuário registrado com sucesso!");
-        setTimeout(() => {
-            navigate("/login"); // Redireciona após registro
-        }, 1000);
     };
-
+    
     return (
         <>
             <Navbar />
@@ -119,6 +120,7 @@ function Register() {
                                     />
                                 </Grid>
                             </Grid>
+
                             {error && (
                                 <Typography color="error" sx={{ mt: 2 }}>
                                     {error}
@@ -129,6 +131,7 @@ function Register() {
                                     {success}
                                 </Typography>
                             )}
+
                             <Button
                                 type="submit"
                                 fullWidth
@@ -146,3 +149,5 @@ function Register() {
 }
 
 export default Register;
+
+               
