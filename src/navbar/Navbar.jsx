@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -16,125 +16,208 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
-// Nome e rota
-const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Cadastrar Produto', path: '/cadastrar-produto' },
-    { label: 'Login', path: '/login' },
-    { label: 'Carrinho', path: '/cart' }
-];
+const navItems = [{ label: 'Produtos', path: '/' }];
 
 function Navbar(props) {
-    const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    const navigate = useNavigate();
+  const { window: windowFn } = props;
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const navigate = useNavigate();
+  const location = useLocation(); // <-- pega a rota atual
 
-    const handleDrawerToggle = () => {
-        setMobileOpen((prevState) => !prevState);
+  const updateCartCount = () => {
+    try {
+      const fakeUser = JSON.parse(localStorage.getItem("fakeUser"));
+      const total = fakeUser?.cart?.products?.reduce((sum, p) => sum + p.quantity, 0) || 0;
+      setCartCount(total);
+    } catch (e) {
+      setCartCount(0);
+    }
+  };
+
+  useEffect(() => {
+    updateCartCount(); // inicial
+
+    const handleUpdate = () => updateCartCount();
+
+    window.addEventListener("cart-updated", handleUpdate);  // evento customizado para mesmo tab
+    window.addEventListener("storage", handleUpdate);       // evento storage para outras tabs
+
+    return () => {
+      window.removeEventListener("cart-updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
     };
+  }, []);
 
-    const handleNavigate = (path) => {
-        navigate(path);
-        setMobileOpen(false); // fecha o menu em mobile após navegação
-    };
+  const handleDrawerToggle = () => {
+    setMobileOpen(prev => !prev);
+  };
 
-    const drawer = (
-        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" sx={{ my: 2 }}>
-                MUI
-            </Typography>
-            <Divider />
-            <List>
-                {navItems.map((item) => (
-                    <ListItem key={item.label} disablePadding>
-                        <ListItemButton sx={{ textAlign: 'center' }} onClick={() => handleNavigate(item.path)}>
-                            <ListItemText primary={item.label} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    );
+  const handleNavigate = (path) => {
+    navigate(path);
+    setMobileOpen(false);
+  };
 
-    const container = window !== undefined ? () => window().document.body : undefined;
+  const container = windowFn !== undefined ? () => windowFn().document.body : undefined;
+  const fakeUser = localStorage.getItem("fakeUser");
+  const nomeUser = fakeUser ? JSON.parse(fakeUser).username : "";
 
+  const handleCartClick = () => {
+    if (fakeUser) {
+      navigate('/cart');
+    } else {
+      navigate('/login');
+    }
+  };
 
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+      <Typography variant="h6" sx={{ my: 2 }}>
+        MUI
+      </Typography>
+      <Divider />
+      <List>
+        {navItems.map((item) => (
+          <ListItem key={item.label} disablePadding>
+            <ListItemButton sx={{ textAlign: 'center' }} onClick={() => handleNavigate(item.path)}>
+              <ListItemText primary={item.label} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+        {!fakeUser && (
+          <>
+            <ListItem disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }} onClick={() => handleNavigate('/login')}>
+                <ListItemText primary="Login" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }} onClick={() => handleNavigate('/register')}>
+                <ListItemText primary="Registrar" />
+              </ListItemButton>
+            </ListItem>
+          </>
+        )}
+      </List>
+    </Box>
+  );
 
-    React.useEffect(() => {
-    localStorage.getItem("fakeUser") && console.log("Usuário local encontrado:", JSON.parse(localStorage.getItem("fakeUser")));
-    }, []);
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar component="nav">
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+          >
+            MUI
+          </Typography>
 
-const nomeUser = localStorage.getItem("fakeUser") ? JSON.parse(localStorage.getItem("fakeUser")).username : "Usuário";
-
-    return (
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <AppBar component="nav">
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        sx={{ mr: 2, display: { sm: 'none' } }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-                    >
-                        MUI
-                    </Typography>
-                    <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                        {navItems.map((item) => (
-                            <Button key={item.label} sx={{ color: '#fff' }} onClick={() => handleNavigate(item.path)}>
-                                {item.label}
-                            </Button>
-                        ))}
-                    </Box>
-                    <ShoppingCartIcon sx={{ ml: 2 }} />
-                    
-                    {nomeUser && (
-                            <Typography variant="h6" sx={{ ml: 2 }}>
-                               {nomeUser}
-                            </Typography>
-                        )}
-
-                    <PersonIcon sx={{ ml: 2 }} />
-                </Toolbar>
-            </AppBar>
-            <nav>
-                <Drawer
-                    container={container}
-                    variant="temporary"
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{
-                        keepMounted: true,
-                    }}
-                    sx={{
-                        display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                    }}
+          {/* Menu desktop */}
+          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+            {navItems.map((item) => (
+              <Button key={item.label} sx={{ color: '#fff' }} onClick={() => handleNavigate(item.path)}>
+                {item.label}
+              </Button>
+            ))}
+            {!fakeUser && (
+              <>
+                <Button color="inherit" onClick={() => navigate('/login')}>
+                  Login
+                </Button>
+                <Button
+                  onClick={() => navigate('/register')}
+                  sx={{
+                    ml: 1,
+                    bgcolor: 'rgba(255,255,255,0.2)',
+                    color: '#fff',
+                    '&:hover': {
+                      bgcolor: 'rgba(255,255,255,0.3)'
+                    }
+                  }}
                 >
-                    {drawer}
-                </Drawer>
-            </nav>
-            <Box component="main" sx={{ p: 3 }}>
-                <Toolbar />
+                  cadastrar-se
+                </Button>
+              </>
+            )}
+          </Box>
+
+          {/* Carrinho - aparece somente se NÃO estiver na rota /cart */}
+          {location.pathname !== '/cart' && (
+            <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+              <IconButton color="inherit" onClick={handleCartClick}>
+                <ShoppingCartIcon />
+              </IconButton>
+              {cartCount > 0 && (
+                <Box
+                  sx={{
+                    backgroundColor: 'red',
+                    color: 'white',
+                    borderRadius: '50%',
+                    padding: '0.3em 0.6em',
+                    fontSize: '0.8rem',
+                    ml: -1.5,
+                    mt: -0.5,
+                  }}
+                >
+                  {cartCount}
+                </Box>
+              )}
             </Box>
-        </Box>
-    );
+          )}
+
+          {/* Nome do usuário se logado */}
+          {nomeUser && (
+            <Typography variant="h6" sx={{ ml: 2 }}>
+              {nomeUser}
+            </Typography>
+          )}
+
+          <PersonIcon sx={{ ml: 1 }} />
+        </Toolbar>
+      </AppBar>
+
+      {/* Drawer mobile */}
+      <nav>
+        <Drawer
+          container={container}
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </nav>
+
+      <Box component="main" sx={{ p: 3 }}>
+        <Toolbar />
+      </Box>
+    </Box>
+  );
 }
 
 Navbar.propTypes = {
-    window: PropTypes.func,
+  window: PropTypes.func,
 };
 
 export default Navbar;

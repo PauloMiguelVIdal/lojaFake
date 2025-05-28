@@ -24,12 +24,12 @@ const Home = () => {
         .then(response => console.log(response.data))
 
 
-        useEffect(() => {
-            // Fetch users data from the API
-            axios.get('https://fakestoreapi.com/users')
-                .then(response => console.log(response.data))
-                .catch(error => console.error('Error fetching users:', error));
-        }, []);
+    useEffect(() => {
+        // Fetch users data from the API
+        axios.get('https://fakestoreapi.com/users')
+            .then(response => console.log(response.data))
+            .catch(error => console.error('Error fetching users:', error));
+    }, []);
 
 
 
@@ -38,10 +38,18 @@ const Home = () => {
 
             <Navbar />
             <Container maxWidth={"xl"}>
-                <Grid container spacing={8}>
-                    {products.map((product, key) => (
-                        <Grid item xs={3} >
-                            <CardProduct key={key} image={product.image} title={product.title} price={product.price} description={product.description}  id={product.id} />
+                <Grid container spacing={4}>
+                    {products.map((product, index) => (
+                     <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                            <div style={{ height: '100%' }}>
+                                <CardProduct
+                                    id={product.id}
+                                    image={product.image}
+                                    title={product.title}
+                                    price={product.price}
+                                    description={product.description}
+                                />
+                            </div>
                         </Grid>
                     ))}
                 </Grid>

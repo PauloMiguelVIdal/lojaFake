@@ -41,7 +41,7 @@ function Register() {
     
             setSuccess("Usuário registrado com sucesso!");
             setTimeout(() => {
-                navigate("/login");
+                navigate("/");
             }, 1000);
         } catch (err) {
             console.error("Erro ao registrar usuário localmente:", err);

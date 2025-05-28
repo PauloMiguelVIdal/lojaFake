@@ -11,48 +11,43 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import AccordionDescription from './accordionDescription';
 
 export default function CardProduct({ id, title, price, description, image }) {
-
-  const handleAddToCart = () => {
+  const addToCart = (productId, quantity = 1) => {
     const storedUser = localStorage.getItem("fakeUser");
 
     if (!storedUser) {
-      alert("Você precisa estar logado para adicionar itens ao carrinho.");
+      // alert("Você precisa estar logado para adicionar itens ao carrinho.");
       return;
     }
 
-    try {
-      const fakeUser = JSON.parse(storedUser);
+    const fakeUser = JSON.parse(storedUser);
 
-      // Garante que o carrinho e a lista de produtos existam
-      if (!fakeUser.cart) {
-        fakeUser.cart = { products: [] };
-      }
-      if (!Array.isArray(fakeUser.cart.products)) {
-        fakeUser.cart.products = [];
-      }
-
-      const currentProducts = fakeUser.cart.products;
-
-      // Verifica se o produto já está no carrinho
-      const existingProductIndex = currentProducts.findIndex(p => p.productId === id);
-
-      if (existingProductIndex !== -1) {
-        // Se já existe, incrementa a quantidade
-        currentProducts[existingProductIndex].quantity += 1;
-      } else {
-        // Caso contrário, adiciona novo produto
-        currentProducts.push({ productId: id, quantity: 1 });
-      }
-
-      // Atualiza o fakeUser no localStorage
-      fakeUser.cart.products = currentProducts;
-      localStorage.setItem("fakeUser", JSON.stringify(fakeUser));
-
-      alert("Produto adicionado ao carrinho!");
-    } catch (error) {
-      console.error("Erro ao adicionar produto ao carrinho:", error);
-      alert("Erro ao adicionar ao carrinho.");
+    if (!fakeUser.cart) {
+      fakeUser.cart = { products: [] };
     }
+    if (!Array.isArray(fakeUser.cart.products)) {
+      fakeUser.cart.products = [];
+    }
+
+    const updatedCart = { ...fakeUser.cart };
+    const existingProduct = updatedCart.products.find(p => p.productId === productId);
+
+    if (existingProduct) {
+      existingProduct.quantity += quantity;
+    } else {
+      updatedCart.products.push({ productId, quantity });
+    }
+
+    const updatedUser = { ...fakeUser, cart: updatedCart };
+    localStorage.setItem("fakeUser", JSON.stringify(updatedUser));
+
+    // 🔄 dispara evento para atualizar outros componentes
+    window.dispatchEvent(new Event("storage"));
+
+    // alert("Produto adicionado ao carrinho!");
+  };
+
+  const handleAddToCart = () => {
+    addToCart(id, 1);
   };
 
   return (
