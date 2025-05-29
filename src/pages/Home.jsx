@@ -21,7 +21,8 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="home">
+    
+    <div className="home" >
       <Navbar />
       <Container maxWidth={false}> {/* Ajuste para permitir mais largura */}
         <Grid container spacing={4} justifyContent="center"> {/* Centralização e espaçamento melhorado */}

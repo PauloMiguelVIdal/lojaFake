@@ -107,9 +107,16 @@ function Navbar(props) {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }} className="navbar">
       <CssBaseline />
-      <AppBar component="nav">
+      <AppBar
+        component="nav"
+        sx={{
+          background: 'linear-gradient(90deg, #350973, #6411D9, #F28705)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+          marginBottom: '64px',
+        }}
+      >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -123,41 +130,60 @@ function Navbar(props) {
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', letterSpacing: 1 }}
           >
             MUI
           </Typography>
-
-          {/* Menu desktop */}
+  
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              <Button key={item.label} sx={{ color: '#fff' }} onClick={() => handleNavigate(item.path)}>
+              <Button
+                key={item.label}
+                sx={{
+                  color: '#fff',
+                  textTransform: 'uppercase',
+                  fontWeight: 'bold',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255,255,255,0.15)',
+                  }
+                }}
+                onClick={() => handleNavigate(item.path)}
+              >
                 {item.label}
               </Button>
             ))}
             {!fakeUser && (
               <>
-                <Button color="inherit" onClick={() => navigate('/login')}>
+                <Button
+                  onClick={() => navigate('/login')}
+                  sx={{
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.15)',
+                    }
+                  }}
+                >
                   Login
                 </Button>
                 <Button
                   onClick={() => navigate('/register')}
                   sx={{
                     ml: 1,
-                    bgcolor: 'rgba(255,255,255,0.2)',
+                    background: 'linear-gradient(to right, #F28705, #6411D9)',
                     color: '#fff',
+                    fontWeight: 'bold',
                     '&:hover': {
-                      bgcolor: 'rgba(255,255,255,0.3)'
+                      background: 'linear-gradient(to right, #6411D9, #F28705)',
                     }
                   }}
                 >
-                  cadastrar-se
+                  Cadastrar-se
                 </Button>
               </>
             )}
           </Box>
-
-          {/* Carrinho - aparece somente se NÃO estiver na rota /cart */}
+  
           {location.pathname !== '/cart' && (
             <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
               <IconButton color="inherit" onClick={handleCartClick}>
@@ -166,13 +192,14 @@ function Navbar(props) {
               {cartCount > 0 && (
                 <Box
                   sx={{
-                    backgroundColor: 'red',
+                    backgroundColor: '#6411D9',
                     color: 'white',
                     borderRadius: '50%',
                     padding: '0.3em 0.6em',
                     fontSize: '0.8rem',
                     ml: -1.5,
                     mt: -0.5,
+                    fontWeight: 'bold'
                   }}
                 >
                   {cartCount}
@@ -180,18 +207,17 @@ function Navbar(props) {
               )}
             </Box>
           )}
-
-          {/* Nome do usuário se logado */}
+  
           {nomeUser && (
-            <Typography variant="h6" sx={{ ml: 2 }}>
+            <Typography variant="h6" sx={{ ml: 2, fontWeight: 'bold', color: '#350973' }}>
               {nomeUser}
             </Typography>
           )}
-
+  
           <PersonIcon sx={{ ml: 1 }} />
         </Toolbar>
       </AppBar>
-
+  
       {/* Drawer mobile */}
       <nav>
         <Drawer
@@ -208,12 +234,14 @@ function Navbar(props) {
           {drawer}
         </Drawer>
       </nav>
-
+  
+      {/* Espaço abaixo do AppBar para conteúdo da página */}
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
       </Box>
     </Box>
   );
+  
 }
 
 Navbar.propTypes = {
