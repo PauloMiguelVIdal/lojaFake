@@ -11,7 +11,8 @@ export default function AccordionDescription({description}) {
            
             <Accordion>
                 <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
+                  expandIcon={<span><ExpandMoreIcon /></span>}
+
                     aria-controls="panel2-content"
                     id="panel2-header"
                 >
