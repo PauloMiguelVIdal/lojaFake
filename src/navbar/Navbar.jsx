@@ -77,7 +77,7 @@ function Navbar(props) {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Typography variant="h6" sx={{ my: 2 }}>
-        MUI
+      VANE STORE
       </Typography>
       <Divider />
       <List>
@@ -132,7 +132,8 @@ function Navbar(props) {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', letterSpacing: 1 }}
           >
-            MUI
+                   VANE STORE
+
           </Typography>
   
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
@@ -170,11 +171,11 @@ function Navbar(props) {
                   onClick={() => navigate('/register')}
                   sx={{
                     ml: 1,
-                    background: 'linear-gradient(to right, #F28705, #6411D9)',
+                    background: ' #6411D9',
                     color: '#fff',
                     fontWeight: 'bold',
                     '&:hover': {
-                      background: 'linear-gradient(to right, #6411D9, #F28705)',
+                      background: '#350973',
                     }
                   }}
                 >
@@ -236,7 +237,7 @@ function Navbar(props) {
       </nav>
   
       {/* Espaço abaixo do AppBar para conteúdo da página */}
-      <Box component="main" sx={{ p: 3 }}>
+      <Box component="main" sx={{ p: 2 }}>
         <Toolbar />
       </Box>
     </Box>

@@ -1,9 +1,14 @@
-import { Button, Container, TextField, Typography, Box, Grid } from "@mui/material";
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import {
+    Button,
+    Container,
+    TextField,
+    Typography,
+    Box,
+    Grid,
+} from "@mui/material";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
-import { useNavigate } from "react-router-dom";
-import Cart from "./Cart";
 
 function Register() {
     const [username, setUsername] = useState("");
@@ -19,8 +24,7 @@ function Register() {
         e.preventDefault();
         setError(null);
         setSuccess(null);
-    
-        // Cria o objeto completo do usuário com carrinho incluso
+
         const user = {
             email: email,
             username: username,
@@ -34,11 +38,9 @@ function Register() {
                 total: 0
             }
         };
-    
+
         try {
-            // Armazena localmente o usuário completo como "fakeUser"
             localStorage.setItem("fakeUser", JSON.stringify(user));
-    
             setSuccess("Usuário registrado com sucesso!");
             setTimeout(() => {
                 navigate("/");
@@ -48,106 +50,168 @@ function Register() {
             setError("Erro ao registrar. Tente novamente.");
         }
     };
-    
+
     return (
-        <>
+        <Box
+            sx={{
+                minHeight: '100vh',
+                background: 'linear-gradient(135deg, #350973, #6411D9)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                py: 8,
+            }}
+        >
             <Navbar />
-            <div className="w-full h-screen flex items-center justify-center bg-white">
-                <Container maxWidth="sm">
-                    <Box
-                        sx={{
-                            marginTop: 8,
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Typography component="h1" className="text-black" variant="h5">
-                            Register
-                        </Typography>
-                        <Box component="form" onSubmit={registerUser} sx={{ mt: 3 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="firstname"
-                                        label="First Name"
-                                        value={firstname}
-                                        onChange={(e) => setFirstname(e.target.value)}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="lastname"
-                                        label="Last Name"
-                                        value={lastName}
-                                        onChange={(e) => setLastname(e.target.value)}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="username"
-                                        label="Username"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="email"
-                                        label="Email"
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="password"
-                                        label="Password"
-                                        type="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                </Grid>
+            <Container maxWidth="sm">
+                <Box
+                    sx={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        borderRadius: 4,
+                        p: 5,
+                        boxShadow: '0 4px 20px rgba(100, 17, 217, 0.3)',
+                        backdropFilter: 'blur(10px)',
+                        color: 'white',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Typography variant="h4" fontWeight="bold" color="white" gutterBottom>
+                       Cadastrar-se
+                    </Typography>
+                    <Box component="form" onSubmit={registerUser} sx={{ mt: 3, width: '100%' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="firstname"
+                                    label="Nome"
+                                    value={firstname}
+                                    onChange={(e) => setFirstname(e.target.value)}
+                                    sx={inputStyles}
+                                />
                             </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="lastname"
+                                    label="Sobrenome"
+                                    value={lastName}
+                                    onChange={(e) => setLastname(e.target.value)}
+                                    sx={inputStyles}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="username"
+                                    label="Usuário"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    sx={inputStyles}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="email"
+                                    label="Email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    sx={inputStyles}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="password"
+                                    label="Senha"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    sx={inputStyles}
+                                />
+                            </Grid>
+                        </Grid>
 
-                            {error && (
-                                <Typography color="error" sx={{ mt: 2 }}>
-                                    {error}
-                                </Typography>
-                            )}
-                            {success && (
-                                <Typography color="success.main" sx={{ mt: 2 }}>
-                                    {success}
-                                </Typography>
-                            )}
+                        {error && (
+                            <Typography color="error" sx={{ mt: 2 }}>
+                                {error}
+                            </Typography>
+                        )}
+                        {success && (
+                            <Typography sx={{ mt: 2, color: '#00e676' }}>
+                                {success}
+                            </Typography>
+                        )}
 
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Register
-                            </Button>
-                        </Box>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{
+                                mt: 3,
+                                mb: 2,
+                                backgroundColor: '#6411D9',
+                                fontWeight: 'bold',
+                                color: '#fff',
+                                '&:hover': {
+                                    backgroundColor: '#350973',
+                                },
+                            }}
+                        >
+                            Registrar
+                        </Button>
+
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            component={RouterLink}
+                            to="/Login"
+                            sx={{
+                                borderColor: '#ff9800',
+                                color: '#ff9800',
+                                fontWeight: 'bold',
+                                '&:hover': {
+                                    backgroundColor: '#ff9800',
+                                    color: '#fff',
+                                    borderColor: '#ff9800',
+                                },
+                            }}
+                        >
+                            Voltar ao Login
+                        </Button>
                     </Box>
-                </Container>
-            </div>
-        </>
+                </Box>
+            </Container>
+        </Box>
     );
 }
 
-export default Register;
+const inputStyles = {
+    input: { color: 'white' },
+    label: { color: '#cfc6f8' },
+    '& label.Mui-focused': {
+        color: '#cfc6f8',
+    },
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderColor: '#9a6ef0',
+        },
+        '&:hover fieldset': {
+            borderColor: '#cfc6f8',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: '#9a6ef0',
+        },
+    },
+};
 
-               
+export default Register;

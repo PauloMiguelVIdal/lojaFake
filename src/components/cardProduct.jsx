@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import CardActions from '@mui/material/CardActions';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import AccordionDescription from './accordionDescription';
+import AccordionDescription from './AccordionDescription';
 
 export default function CardProduct({ id, title, price, description, image }) {
   const addToCart = (productId, quantity = 1) => {
