@@ -81,7 +81,7 @@ const Login = () => {
             <Container maxWidth="sm">
                 <Box
                     sx={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.10)',
                         borderRadius: 4,
                         p: 5,
                         boxShadow: '0 4px 20px rgba(100, 17, 217, 0.3)',

@@ -75,9 +75,9 @@ function Navbar(props) {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-      VANE STORE
+    <Box sx={{ textAlign: 'center', paddingTop: 2 }}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+        VANE STORE
       </Typography>
       <Divider />
       <List>
@@ -88,7 +88,9 @@ function Navbar(props) {
             </ListItemButton>
           </ListItem>
         ))}
-        {!fakeUser && (
+
+        {/* Botões de login/cadastro ou saudação */}
+        {!fakeUser ? (
           <>
             <ListItem disablePadding>
               <ListItemButton sx={{ textAlign: 'center' }} onClick={() => handleNavigate('/login')}>
@@ -97,11 +99,39 @@ function Navbar(props) {
             </ListItem>
             <ListItem disablePadding>
               <ListItemButton sx={{ textAlign: 'center' }} onClick={() => handleNavigate('/register')}>
-                <ListItemText primary="Registrar" />
+                <ListItemText primary="Cadastrar-se" />
               </ListItemButton>
             </ListItem>
           </>
+        ) : (
+          <>
+            <ListItem disablePadding>
+              <ListItemText
+                primary={`Olá, ${nomeUser}`}
+                sx={{
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  color: '#350973',
+                  my: 1,
+                }}
+              />
+            </ListItem>
+          </>
         )}
+
+        {/* Carrinho */}
+        <ListItem disablePadding>
+          <ListItemButton sx={{ textAlign: 'center' }} onClick={handleCartClick}>
+            <ShoppingCartIcon sx={{ mr: 1 }} />
+            <ListItemText
+              primary={`Carrinho (${cartCount})`}
+              primaryTypographyProps={{
+                fontWeight: 'bold',
+                color: '#6411D9',
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
@@ -117,108 +147,118 @@ function Navbar(props) {
           marginBottom: '64px',
         }}
       >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', letterSpacing: 1 }}
-          >
-                   VANE STORE
+<Toolbar sx={{ justifyContent: 'space-between' }}>
+  {/* Ícone do menu hambúrguer e título da loja */}
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <IconButton
+      color="inherit"
+      aria-label="open drawer"
+      edge="start"
+      onClick={handleDrawerToggle}
+      sx={{ mr: 2, display: { sm: 'none' } }}
+    >
+      <MenuIcon />
+    </IconButton>
+    <Typography
+      variant="h6"
+      component="div"
+      sx={{ fontWeight: 'bold', letterSpacing: 1 }}
+    >
+      VANE STORE
+    </Typography>
+  </Box>
 
-          </Typography>
-  
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item) => (
-              <Button
-                key={item.label}
-                sx={{
-                  color: '#fff',
-                  textTransform: 'uppercase',
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.15)',
-                  }
-                }}
-                onClick={() => handleNavigate(item.path)}
-              >
-                {item.label}
-              </Button>
-            ))}
-            {!fakeUser && (
-              <>
-                <Button
-                  onClick={() => navigate('/login')}
-                  sx={{
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.15)',
-                    }
-                  }}
-                >
-                  Login
-                </Button>
-                <Button
-                  onClick={() => navigate('/register')}
-                  sx={{
-                    ml: 1,
-                    background: ' #6411D9',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      background: '#350973',
-                    }
-                  }}
-                >
-                  Cadastrar-se
-                </Button>
-              </>
-            )}
+  {/* Seção de botões e usuário */}
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    {/* Itens só para desktop */}
+    <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center' }}>
+      {navItems.map((item) => (
+        <Button
+          key={item.label}
+          sx={{
+            color: '#fff',
+            textTransform: 'uppercase',
+            fontWeight: 'bold',
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255,0.15)',
+            }
+          }}
+          onClick={() => handleNavigate(item.path)}
+        >
+          {item.label}
+        </Button>
+      ))}
+      {!fakeUser && (
+        <>
+          <Button
+            onClick={() => navigate('/login')}
+            sx={{
+              color: '#fff',
+              fontWeight: 'bold',
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.15)',
+              }
+            }}
+          >
+            Login
+          </Button>
+          <Button
+            onClick={() => navigate('/register')}
+            sx={{
+              ml: 1,
+              background: ' #6411D9',
+              color: '#fff',
+              fontWeight: 'bold',
+              '&:hover': {
+                background: '#350973',
+              }
+            }}
+          >
+            Cadastrar-se
+          </Button>
+        </>
+      )}
+    </Box>
+
+    {/* Carrinho (visível sempre, exceto na rota /cart) */}
+    {location.pathname !== '/cart' && (
+      <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+        <IconButton color="inherit" onClick={handleCartClick}>
+          <ShoppingCartIcon />
+        </IconButton>
+        {cartCount > 0 && (
+          <Box
+            sx={{
+              backgroundColor: '#6411D9',
+              color: 'white',
+              borderRadius: '50%',
+              padding: '0.3em 0.6em',
+              fontSize: '0.8rem',
+              ml: -1.5,
+              mt: -0.5,
+              fontWeight: 'bold'
+            }}
+          >
+            {cartCount}
           </Box>
-  
-          {location.pathname !== '/cart' && (
-            <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
-              <IconButton color="inherit" onClick={handleCartClick}>
-                <ShoppingCartIcon />
-              </IconButton>
-              {cartCount > 0 && (
-                <Box
-                  sx={{
-                    backgroundColor: '#6411D9',
-                    color: 'white',
-                    borderRadius: '50%',
-                    padding: '0.3em 0.6em',
-                    fontSize: '0.8rem',
-                    ml: -1.5,
-                    mt: -0.5,
-                    fontWeight: 'bold'
-                  }}
-                >
-                  {cartCount}
-                </Box>
-              )}
-            </Box>
-          )}
-  
-          {nomeUser && (
-            <Typography variant="h6" sx={{ ml: 2, fontWeight: 'bold', color: '#350973' }}>
-              {nomeUser}
-            </Typography>
-          )}
-  
-          <PersonIcon sx={{ ml: 1 }} />
-        </Toolbar>
+        )}
+      </Box>
+    )}
+
+    {/* Usuário (sempre visível, alinhado à direita) */}
+    <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+      <PersonIcon />
+      {nomeUser && (
+        <Typography variant="h6" sx={{ ml: 1, fontWeight: 'bold', color: '#350973', fontSize: '1rem' }}>
+          {nomeUser}
+        </Typography>
+      )}
+    </Box>
+  </Box>
+</Toolbar>
+
       </AppBar>
-  
+
       {/* Drawer mobile */}
       <nav>
         <Drawer
@@ -235,14 +275,14 @@ function Navbar(props) {
           {drawer}
         </Drawer>
       </nav>
-  
+
       {/* Espaço abaixo do AppBar para conteúdo da página */}
       <Box component="main" sx={{ p: 2 }}>
         <Toolbar />
       </Box>
     </Box>
   );
-  
+
 }
 
 Navbar.propTypes = {
