@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
-import Footer from "../components/Footer";
+import Footer from "../components/Footer.jsx";
 
 function Register() {
     const [username, setUsername] = useState("");

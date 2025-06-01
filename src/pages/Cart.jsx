@@ -10,7 +10,7 @@ import {
   Divider,
   CircularProgress,Modal, Fade, Backdrop
 } from '@mui/material';
-import Footer from '../components/Footer';
+import Footer from "../components/Footer.jsx";
 import Navbar from '../navbar/Navbar';
 
 const Cart = () => {
