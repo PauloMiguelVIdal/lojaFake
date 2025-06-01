@@ -10,7 +10,7 @@ import {
   Divider,
   CircularProgress,Modal, Fade, Backdrop
 } from '@mui/material';
-
+import Footer from '../components/Footer';
 import Navbar from '../navbar/Navbar';
 
 const Cart = () => {
@@ -358,7 +358,7 @@ const Cart = () => {
     </Box>
   </Fade>
 </Modal>
-
+  <Footer />
 </Box>
 
 

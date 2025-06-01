@@ -4,7 +4,7 @@ import { Container} from '@mui/material';
 import Grid from '@mui/material/Grid';
 import CardProduct from '../components/cardProduct';
 import Navbar from '../navbar/Navbar';
-
+import Footer from '../components/Footer';
 const Home = () => {
   const [products, setProducts] = useState([]);
 
@@ -38,7 +38,9 @@ const Home = () => {
             </Grid>
           ))}
         </Grid>
+        
       </Container>
+      <Footer />
     </div>
   );
 };
