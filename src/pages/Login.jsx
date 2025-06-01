@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
-import Footer from "../components/Footer.jsx";
+import Rodape from "../components/Rodape.jsx";
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -199,7 +199,7 @@ function Login() {
                     </Box>
                 </Container>
             </Box>
-            <Footer />
+            <Rodape />
         </Box>
     );
 }

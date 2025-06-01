@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
-import Footer from "../components/Footer.jsx";
+import Rodape from "../components/Rodape.jsx";
 
 function Register() {
     const [username, setUsername] = useState("");
@@ -215,7 +215,7 @@ function Register() {
                     </Box>
                 </Container>
             </Box>
-            <Footer />
+            <Rodape />
         </Box>
     );
 }
